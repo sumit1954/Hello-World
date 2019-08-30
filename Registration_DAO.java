@@ -1,4 +1,4 @@
-/*
+ /*
 * To change this license header, choose License Headers in Project Properties.
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
@@ -13,6 +13,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +56,14 @@ public class Registration_DAO {
     document.put("emp_id",model.getEmp_id());
     document.put("password",model.getPassword());
     col.insert(document); // insert first doc
-	return registration;
+	return model;
 	}
 	
-	public static Object getNextSequence(String name) throws Exception{
+	public  Object getNextSequence(String name) {
     //MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
     // Now connect to your databases
-    //DB db = mongoClient.getDB("demo");
-    //DBCollection collection = db.getCollection("counters");
+   // DB db = mongoClient.getDB("Registration");
+   // DBCollection collection = db.getCollection("userDetails");
     BasicDBObject find = new BasicDBObject();
     find.put("_id", name);
     BasicDBObject update = new BasicDBObject();
@@ -127,16 +128,25 @@ public class Registration_DAO {
         return RegistrationConverter.toRegistration(data);
     }
     
-	 public int getNextID(){
-        int id;
-        List<Registration> list = readAllUser();
+	 public String getNextID(){
+       try {
+           int id;
+           List<Registration> list = readAllUser();
+           if(list!=null){
+               id = Integer.parseInt(list.get(list.size()).getid) + 1;
+           }else{
+               id = 1;
 
-        if(list!=null){
-            id = Integer.parseInt(list.get(list.size()).id) + 1;
-        }else{
-            id = 1;
-        }
-        return id;
+          }
+
+          return String.valueOf(id);
+       } catch (NumberFormatException e) {
+           e.printStackTrace();
+           return "1";
+ 
+     }
+ 
+ }
     }
 
     
@@ -157,4 +167,3 @@ public class Registration_DAO {
 //        }
 //    }
     
-}
